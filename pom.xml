@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.5.1</version>
+    <version>2.5.2</version>
     <relativePath/>
   </parent>
 
@@ -16,35 +15,30 @@
 
   <properties>
     <java.version>16</java.version>
-    <minimal.maven.version>3.6.1</minimal.maven.version>
+    <spring-boot.version>2.5.2</spring-boot.version>
     <spring-cloud.version>2020.0.3</spring-cloud.version>
+    <minimal.maven.version>3.8.1</minimal.maven.version>
 
-    <vavr.version>0.10.3</vavr.version>
-
-    <checker.version>3.14.0</checker.version>
+    <vavr.version>0.10.4</vavr.version>
+    <checker.version>3.16.0</checker.version>
     <annotations.version>21.0.1</annotations.version>
     <jcip-annotations.version>1.0</jcip-annotations.version>
-    <spotbugs.version>4.2.3</spotbugs.version>
+    <spotbugs.version>4.3.0</spotbugs.version>
     <error_prone_annotations.version>2.7.1</error_prone_annotations.version>
-
     <springdoc-openapi.version>1.5.9</springdoc-openapi.version>
 
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven.compiler.release>${java.version}</maven.compiler.release>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
-    <maven.compiler.forceJavacCompilerUse>true</maven.compiler.forceJavacCompilerUse>
-    <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-    <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
-
     <maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
     <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
     <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
-
+    <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
+    <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
   </properties>
+
 
   <dependencyManagement>
     <dependencies>
-
       <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-dependencies</artifactId>
@@ -52,7 +46,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-
       <dependency>
         <groupId>io.vavr</groupId>
         <artifactId>vavr</artifactId>
@@ -144,12 +137,10 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-openfeign</artifactId>
     </dependency>
-
     <!--<dependency>-->
     <!--  <groupId>org.postgresql</groupId>-->
     <!--  <artifactId>postgresql</artifactId>-->
@@ -169,7 +160,6 @@
       <groupId>org.checkerframework</groupId>
       <artifactId>checker</artifactId>
     </dependency>
-
     <dependency>
       <groupId>io.vavr</groupId>
       <artifactId>vavr</artifactId>
@@ -221,8 +211,8 @@
     <!--endregion-->
 
   </dependencies>
-
   <build>
+
     <pluginManagement>
       <plugins>
         <plugin>
@@ -230,10 +220,7 @@
           <version>${maven-compiler-plugin.version}</version>
           <configuration>
             <compilerArgs>
-              <!--<arg>-parameters</arg>-->
               <arg>--enable-preview</arg>
-              <!--<arg>-Xplugin:Manifold</arg>-->
-              <!--<arg>-Xlint:preview</arg>-->
               <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
               <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
               <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
@@ -254,15 +241,13 @@
               <processorPath>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-configuration-processor</artifactId>
-                <version>2.4.5</version>
+                <version>${spring-boot.version}</version>
               </processorPath>
             </annotationProcessorPaths>
             <annotationProcessors>
               <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor</annotationProcessor>
               <annotationProcessor>lombok.launch.AnnotationProcessorHider$ClaimingProcessor</annotationProcessor>
-              <annotationProcessor>
-                org.springframework.boot.configurationprocessor.ConfigurationMetadataAnnotationProcessor
-              </annotationProcessor>
+              <annotationProcessor>&#xA;                org.springframework.boot.configurationprocessor.ConfigurationMetadataAnnotationProcessor&#xA;              </annotationProcessor>
             </annotationProcessors>
           </configuration>
         </plugin>
@@ -279,7 +264,7 @@
           <version>${versions-maven-plugin.version}</version>
           <configuration>
             <generateBackupPoms>false</generateBackupPoms>
-            <!--suppress MavenModelInspection -->
+            <!--suppress UnresolvedMavenProperty -->
             <rulesUri>file://${maven.multiModuleProjectDirectory}/ruleset.xml</rulesUri>
           </configuration>
         </plugin>
@@ -298,6 +283,53 @@
                     <version>${minimal.maven.version}</version>
                   </requireMavenVersion>
                 </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok-maven-plugin</artifactId>
+          <version>${lombok-maven-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>delombok</id>
+              <!-- <phase>generate-sources</phase> -->
+              <goals>
+                <goal>delombok</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>test-delombok</id>
+              <!-- <phase>generate-test-sources</phase> -->
+              <goals>
+                <goal>testDelombok</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>properties-maven-plugin</artifactId>
+          <version>${properties-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <phase>initialize</phase>
+              <goals>
+                <goal>read-project-properties</goal>
+              </goals>
+              <configuration>
+                <files>
+                  <!--suppress MavenModelInspection, UnresolvedMavenProperty-->
+                  <file>${maven.multiModuleProjectDirectory}/maven.properties</file>
+                </files>
               </configuration>
             </execution>
           </executions>
@@ -325,7 +357,10 @@
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
-
 </project>
