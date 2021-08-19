@@ -20,9 +20,18 @@ class ApuBarTest {
   @SneakyThrows
   @DisplayName("Bar works correctly")
   void barWorksCorrectlyTest() {
-    assertThat(bar.sellDrink(new PersonImpl("Вася", false))).isNotNull();
+    assertThat(bar.sellDrink(new PersonImpl("Вася", false))).isNotNull()
+        .extracting(Drink::getName)
+        .isEqualTo("Squishee");
+  }
+
+  @Test
+  @SneakyThrows
+  @DisplayName("Bar works correctly in bronen scenario")
+  void barWorksCorrectlyInBronenScenarioTest() {
     assertThat(
-        assertThrows(CustomerBrokenException.class, () -> bar.sellDrink(new PersonImpl("Петя", true))))
+        assertThrows(CustomerBrokenException.class,
+            () -> bar.sellDrink(new PersonImpl("Петя", true))))
         .isNotNull()
         .isInstanceOf(CustomerBrokenException.class);
   }
